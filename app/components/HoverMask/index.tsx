@@ -3,11 +3,16 @@ import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 
 interface HoverMaskProps {
+  portalWrapperClassName: string;
   containerClassName: string;
   componentId: number;
 }
 
-function HoverMask({ containerClassName, componentId }: HoverMaskProps) {
+function HoverMask({
+  containerClassName,
+  portalWrapperClassName,
+  componentId,
+}: HoverMaskProps) {
   const [position, setPosition] = useState({
     left: 0,
     top: 0,
@@ -42,6 +47,8 @@ function HoverMask({ containerClassName, componentId }: HoverMaskProps) {
       labelTop -= -20;
     }
 
+    console.log("labelTop", labelTop, labelLeft);
+
     setPosition({
       top: top - containerTop + container.scrollTop,
       left: left - containerLeft + container.scrollTop,
@@ -53,12 +60,7 @@ function HoverMask({ containerClassName, componentId }: HoverMaskProps) {
   }
 
   const el = useMemo(() => {
-    const el = document.createElement("div");
-    el.className = `wrapper`;
-
-    const container = document.querySelector(`.${containerClassName}`);
-    container!.appendChild(el);
-    return el;
+    return document.querySelector(`.${portalWrapperClassName}`)!;
   }, []);
 
   const curComponent = useMemo(() => {
@@ -84,8 +86,8 @@ function HoverMask({ containerClassName, componentId }: HoverMaskProps) {
       <div
         style={{
           position: "absolute",
-          left: position.labelLeft,
-          top: position.labelTop,
+          left: position.width,
+          top: 0,
           fontSize: "14px",
           zIndex: 13,
           display: !position.width || position.width < 10 ? "none" : "inline",
